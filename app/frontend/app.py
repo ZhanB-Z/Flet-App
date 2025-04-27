@@ -3,7 +3,7 @@ import flet as ft
 from app.backend.client import BackendClient
 from app.frontend.ui_components import UIComponents
 from app.frontend.tab_manager import TabManager
-from app.frontend.theme import AppColors, AppTypography, AppSpacing, AppBorderRadius, AppInputs, AppProgress, AppTabs
+from app.frontend.theme import AppColors, AppTypography, AppSpacing, AppInputs, AppProgress, AppTabs
 
 
 class FletApp():
@@ -24,7 +24,7 @@ class FletApp():
         self.page.bgcolor = AppColors.BACKGROUND
         self.dev_mode = dev_mode
         self.backend_client = backend_client
-        self.ui_builder = UIComponents()
+        self.ui_builder = UIComponents(page=self.page)
         
         # Init TabManager and pass tab_handlers
         self.tab_manager = TabManager(
@@ -57,8 +57,6 @@ class FletApp():
     def create_welcome_tab(self):
         """Create content for the Welcome tab"""
 
-        tabs_ref = self.tab_manager.tabs
-
         # Create header
         header = self.ui_builder.create_text_field(
             value="Welcome to Flet Application",
@@ -86,13 +84,18 @@ class FletApp():
             )
         ], spacing=AppSpacing.MEDIUM, alignment=ft.MainAxisAlignment.CENTER)
         
-        # Add content to the page 
-        self.page.add(
-            ft.Container(
-                content=welcome_content,
-                width=AppInputs.FIELD_WIDTH,
-                padding=AppSpacing.MEDIUM
-            )
+        # I will keep it for future styling purposes
+        # Add content to the page.
+        # self.page.add(
+        #     ft.Container(
+        #         content=welcome_content,
+        #         width=AppInputs.FIELD_WIDTH,
+        #         padding=AppSpacing.MEDIUM
+        #     )
+        # )
+        
+        self.ui_builder.add_elements_to_page(
+            welcome_content
         )
         self.page.update()
         
@@ -139,13 +142,14 @@ class FletApp():
                 )
             ], 
             spacing=AppSpacing.MEDIUM,
-            alignment=ft.MainAxisAlignment.CENTER
+            alignment=ft.MainAxisAlignment.CENTER,
         )
-        
-        self.page.add(
+
+        self.ui_builder.add_elements_to_page(
             auth_header,
-            authorization_form
+            authorization_form,
         )
+     
         self.page.update()
     
 
@@ -182,7 +186,7 @@ class FletApp():
             alignment=ft.MainAxisAlignment.CENTER
         )
         
-        self.page.add(
+        self.ui_builder.add_elements_to_page(
             about_me_header,
             about_me_form
         )

@@ -37,21 +37,6 @@ class AppSpacing:
     XL = 32
     XXL = 48
 
-# Border radius - minimal for a minimalist design
-class AppBorderRadius:
-    SMALL = 0                  # No border radius
-    MEDIUM = 0                 # No border radius
-    LARGE = 0                  # No border radius
-    FULL = 9999                # For circular elements only when needed
-
-# Shadows - minimal for a minimalist design
-class AppShadows:
-    NONE = 0                   # No shadow
-    LOW = 0                    # No shadow
-    MEDIUM = 0                 # No shadow
-    HIGH = 0                   # No shadow
-    ELEVATED = 0               # No shadow
-
 # Input fields
 class AppInputs:
     FIELD_WIDTH = 300          # Width of input fields

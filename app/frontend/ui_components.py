@@ -8,7 +8,9 @@ from app.frontend.theme import AppColors, AppTypography, AppSpacing  # Import yo
 
 class UIComponents:
     """A collection of static methods for creating UI components in Flet applications."""
-    
+    def __init__(self, page: ft.Page = None):
+        self.page = page
+        
     @staticmethod
     def create_button(
         text: str,
@@ -428,3 +430,22 @@ class UIComponents:
             color=color,
             **kwargs
         )
+    
+    def add_elements_to_page(self, *elements: Any) -> None:
+        """Adds UI elements to the page"""
+        
+        column_content = ft.Column(
+            controls=[],
+                alignment=ft.MainAxisAlignment.CENTER,
+        )
+        
+        for element in elements:
+            if isinstance(element, list):
+                row = ft.Row(element, alignment=ft.MainAxisAlignment.CENTER)
+                column_content.controls.append(row)
+            else:
+                row = ft.Row([element], alignment=ft.MainAxisAlignment.CENTER)
+                column_content.controls.append(row)
+
+        self.page.add(column_content)
+        self.page.update()

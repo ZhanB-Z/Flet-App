@@ -1,5 +1,3 @@
-import asyncio
-
 import flet as ft
 
 from app.backend.client import get_backend_client
