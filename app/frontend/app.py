@@ -26,6 +26,7 @@ class FletApp():
         self.backend_client = backend_client
         self.ui_builder = UIComponents()
         
+        # Init TabManager and pass tab_handlers
         self.tab_manager = TabManager(
             page=self.page,
             tab_titles=["Welcome", "Authorization", "About me"],
@@ -35,15 +36,6 @@ class FletApp():
                 2: self.create_aboutme_tab,
             }
         )
-        
-        # Style the tabs for simple design
-        for tab in self.tab_manager.tabs.tabs:
-            tab.style = ft.ButtonStyle(
-                color=AppColors.TEXT_PRIMARY,
-                bgcolor=AppColors.BACKGROUND,
-                overlay_color=ft.colors.with_opacity(0.1, AppColors.PRIMARY),
-                shape=ft.RoundedRectangleBorder(radius=0),  # No border radius
-            )
         
         # Set up the page
         self.page.title = "Flet Application"
@@ -87,10 +79,10 @@ class FletApp():
             description,
             ft.Container(height=AppSpacing.LARGE),  # Spacer instead of divider
             self.ui_builder.create_button(
-                text="Get Started",
+                text="Start",
                 on_click=self.on_get_started,
                 bgcolor=AppColors.PRIMARY,
-                color=AppColors.SECONDARY
+                color=AppColors.TEXT_PRIMARY
             )
         ], spacing=AppSpacing.MEDIUM, alignment=ft.MainAxisAlignment.CENTER)
         
@@ -156,33 +148,6 @@ class FletApp():
         )
         self.page.update()
     
-    def _create_feature_section(self, title, description, icon):
-        """Helper method to create a feature section in minimalist style"""
-        return ft.Row(
-            [
-                ft.Icon(icon, color=AppColors.PRIMARY, size=24),
-                ft.Container(width=AppSpacing.MEDIUM),  # Spacer
-                ft.Column(
-                    [
-                        self.ui_builder.create_text_field(
-                            value=title,
-                            text_size=AppTypography.SUBTITLE_SIZE,
-                            color=AppColors.TEXT_PRIMARY
-                        ),
-                        self.ui_builder.create_text_field(
-                            value=description,
-                            text_size=AppTypography.BODY_SIZE,
-                            color=AppColors.TEXT_SECONDARY
-                        ),
-                    ],
-                    spacing=AppSpacing.XS,
-                    alignment=ft.MainAxisAlignment.CENTER,
-                )
-            ],
-            alignment=ft.MainAxisAlignment.START,
-            vertical_alignment=ft.CrossAxisAlignment.CENTER,
-        )
-        
 
     def create_aboutme_tab(self):
         """Creates content for the About Me tab"""
@@ -206,6 +171,12 @@ class FletApp():
                 self.ui_builder.create_text_field(
                     value="Email: bauyrzhan@zhanuzakov.com"
                     ),
+                self.ui_builder.create_button(
+                    text="Back",
+                    on_click=self.back_handler,
+                    bgcolor=AppColors.PRIMARY,
+                    color=AppColors.TEXT_PRIMARY
+                )
             ], 
             spacing=AppSpacing.MEDIUM,
             alignment=ft.MainAxisAlignment.CENTER
@@ -227,7 +198,7 @@ class FletApp():
         self.page.snack_bar.open = True
         self.page.update()
         
-        # Navigate to Features tab
+        # Navigate to Authorization tab
         self.tab_manager.select_tab(1)
     
     def on_save_settings(self, e):
@@ -245,8 +216,16 @@ class FletApp():
     
     def back_handler(self, e: ft.ControlEvent) -> None:
         """Handles back button click"""
-        print(f"Back button is clicked")
-        
+        success = self.tab_manager.back_to_previous()
+        if not success:
+            # Show message if already at the first tab
+            self.page.snack_bar = ft.SnackBar(
+                content=ft.Text("Already at the first tab"),
+                action="OK"
+            )
+            self.page.snack_bar.open = True
+            self.page.update()
+            
 
 def get_flet_app(
     page: ft.Page,

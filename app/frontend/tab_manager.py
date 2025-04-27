@@ -197,14 +197,38 @@ class TabManager:
     
     def select_tab(self, index: int) -> None:
         """
-        Select a specific tab.
+        Select a specific tab and trigger its handler.
         
         Args:
             index: Index of the tab to select
         """
         if 0 <= index < len(self.tabs.tabs):
+            # Update selected index
             self.tabs.selected_index = index
+            
+            # Clear page content
+            self._clear_page()
+            
+            # Call the appropriate tab handler if defined
+            handler = self.tab_handlers.get(index)
+            if handler:
+                handler()
+            
             self.page.update()
+    
+    def back_to_previous(self) -> None:
+        """
+        Navigate to the previous tab if possible.
+        
+        Returns:
+            True if successful, False if already at the first tab
+        """
+        current_index = self.tabs.selected_index
+        if current_index > 0:
+            # Navigate to previous tab
+            self.select_tab(current_index - 1)
+            return True
+        return False
     
     def set_authorization_status(self, is_authorized: bool) -> None:
         """
